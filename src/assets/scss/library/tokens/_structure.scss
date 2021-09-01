@@ -1,0 +1,57 @@
+//-------------------------------------------------------------------
+// Structure
+//-------------------------------------------------------------------
+
+// Screen Sizes for Media Queries
+//-------------------------------------------------------------------
+
+$screen-sizes: (
+    'xxx-large': rem(1900px),
+    'xx-large': rem(1640px),
+    'x-large': rem(1366px),
+    'large': rem(1280px),
+    //,
+    'medium-large': rem(975px),
+    'medium': rem(768px),
+    'medium-small': rem(640px),
+    //,
+    'small': rem(520px),
+    'x-small': rem(375px),
+    'xx-small': rem(360px),
+    'xxx-small': rem(320px),
+);
+
+// Z-Index Scale
+//-------------------------------------------------------------------
+
+$z-indexes: (
+    'under': -1,
+    '0': 0,
+    '1': 1,
+    '2': 10,
+    '3': 100,
+    '4': 1000,
+    '5': 10000,
+    '6': 100000,
+);
+
+// Lines
+//-------------------------------------------------------------------
+
+$lines: (
+    'light': thin solid gray(light, 0.4),
+    'dark': thin solid gray(x-dark, 0.5),
+    'normal': thin solid gray(medium, 0.3),
+);
+
+// Border Radius
+//-------------------------------------------------------------------
+
+$radii: (
+    'x-large': 16px,
+    'large': 10px,
+    'medium': 8px,
+    'small': 6px,
+    'x-small': 4px,
+    'xx-small': 2px,
+);

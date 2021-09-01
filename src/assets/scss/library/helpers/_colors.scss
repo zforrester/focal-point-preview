@@ -1,0 +1,25 @@
+//-------------------------------------------------------------------
+// Color Helper Functions
+//-------------------------------------------------------------------
+
+@function color($pallete, $shade: 1, $alpha: 1) {
+    @if map-has-key($colors, $pallete) {
+        $color: map-get($colors, $pallete);
+        $type: type-of($color);
+        @if $type == 'map' {
+            @if map-has-key(map-get($colors, $pallete), $shade) {
+                $color: map-deep-get($colors, $pallete, $shade);
+            } @else {
+                @warn errorMessage($shade, $colors, 'tokens/_colors.scss');
+                @return null;
+            }
+        } @else {
+            $alpha: $shade;
+            $color: map-get($colors, $pallete);
+        }
+        @return rgba($color, $alpha);
+    }
+
+    @warn errorMessage($pallete, $colors, 'tokens/_colors.scss');
+    @return null;
+}

@@ -1,0 +1,53 @@
+//-------------------------------------------------------------------
+// Typography Helper Functions
+//-------------------------------------------------------------------
+@function font-family($family) {
+    @if map-has-key($font-families, $family) {
+        $family: map-get($font-families, $family);
+        @return $family;
+    } @else {
+        @warn errorMessage($family, $font-families, 'tokens/_typography.scss');
+        @return null;
+    }
+}
+
+@function font-size($size) {
+    @if map-has-key($font-sizes, $size) {
+        $size: map-get($font-sizes, $size);
+        @return rem($size);
+    } @else {
+        @warn errorMessage($size, $font-sizes, 'tokens/_typography.scss');
+        @return null;
+    }
+}
+
+@function font-weight($weight: regular) {
+    @if map-has-key($font-weights, $weight) {
+        @return map-get($font-weights, $weight);
+    } @else {
+        @warn errorMessage($weight, $font-weights, 'tokens/_typography.scss');
+        @return null;
+    }
+}
+
+@function line-height($height: "medium") {
+    @if map-has-key($line-heights, $height) {
+        $height: map-get($line-heights, $height);
+        @return $height;
+    } @else {
+        @warn errorMessage($height, $line-heights, 'tokens/_typography.scss');
+        @return null;
+    }
+}
+
+@mixin font($family: "", $size: "", $weight: "") {
+    @if ($family) {
+        font-family: font-family($family);
+    }
+    @if ($size) {
+        font-size: font-size($size);
+    }
+    @if ($weight) {
+        font-weight: font-weight($weight);
+    }
+}

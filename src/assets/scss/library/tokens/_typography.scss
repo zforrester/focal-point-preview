@@ -1,0 +1,59 @@
+//-------------------------------------------------------------------
+// Typography
+//-------------------------------------------------------------------
+
+// Font Families
+//-------------------------------------------------------------------
+
+$font-family-primary: "Poppins", system-ui, sans-serif;
+$font-family-secondary: Hoefler Text, "Playfair Display", Baskerville Old Face,
+    Garamond, Times New Roman, serif;
+
+$font-families: (
+    "primary": $font-family-primary,
+    "secondary": $font-family-secondary,
+);
+
+// Typographic Scale
+//-------------------------------------------------------------------
+
+$font-sizes: (
+    "xxx-huge": 120px,
+    "xx-huge": 88px,
+    "x-huge": 72px,
+    "huge": 64px,
+    "xxx-large": 36px,
+    "xx-large": 32px,
+    "x-large": 24px,
+    "large": 18px,
+    "medium": 16px,
+    "small": 14px,
+    "x-small": 12px,
+    "xx-small": 11px,
+    "xxx-small": 9px,
+);
+
+// Font Weights
+//-------------------------------------------------------------------
+
+$font-weights: (
+    "thin": 100,
+    "extra-light": 200,
+    "light": 300,
+    "regular": 400,
+    "medium": 500,
+    "semi-bold": 600,
+    "bold": 700,
+    "extra-bold": 800,
+    "black": 900,
+);
+
+// Line heights
+//-------------------------------------------------------------------
+
+$line-heights: (
+    "single": 1,
+    "small": 1.2,
+    "medium": 1.6,
+    "large": 1.8,
+);

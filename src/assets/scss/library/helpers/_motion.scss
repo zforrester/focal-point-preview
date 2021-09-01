@@ -1,0 +1,50 @@
+//-------------------------------------------------------------------
+// Motion
+//-------------------------------------------------------------------
+
+// Timing and Easings
+//-------------------------------------------------------------------
+
+// t stands for Timing
+$t: 0.3s;
+$t-snap: cubic-bezier(0.3, 0.9, 0.4, 0.98);
+$t-drift: cubic-bezier(0.05, 0.31, 0.7, 1);
+$t-shine: cubic-bezier(0.96, 0.43, 0.55, 0.8);
+
+$speeds: (
+    "slow": $t * 1.5 $t-drift,
+    "fast": $t $t-snap,
+);
+
+// Transitions
+//-------------------------------------------------------------------
+
+@function transitionSpeed($speed) {
+    @if map-has-key($speeds, $speed) {
+        $speed: map-get($speeds, $speed);
+        @return $speed;
+    }
+    @warn errorMessage($speed, $speeds,'tokens/_motion.scss');
+    @return null;
+}
+
+@mixin transition($speed: "fast", $properties...) {
+    @if length($properties) < 1 {
+        $properties: all;
+    }
+    will-change: $properties;
+    transition: transitionSpeed($speed);
+    transition-property: $properties;
+
+    @media (prefers-reduced-motion: reduce) {
+        transition-duration: 0;
+    }
+}
+
+@mixin animation($style, $speed: "", $properties...) {
+    $speed: transitionSpeed("fast");
+    animation: $style $speed $properties;
+    @media (prefers-reduced-motion: reduce) {
+        animation-duration: 0;
+    }
+}

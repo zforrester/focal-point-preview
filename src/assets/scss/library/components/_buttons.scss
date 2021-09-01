@@ -1,0 +1,103 @@
+//-------------------------------------------------------------------
+// Buttons
+// -------------------------------------------------------------------
+
+$button-styles: ('primary', 'secondary', 'tertiary');
+$button-sizes: ('small', 'medium', 'large');
+$button-layouts: ('label-left', 'label-center', 'label-right');
+
+// Button Sizes
+//-------------------------------------------------------------------
+
+@mixin button-size($size) {
+    .label {
+        @if ($size == 'small') {
+            @include font('primary', 'small', 'medium');
+            padding: space(0.5) space(1);
+        }
+        @if ($size == 'medium') {
+            @include font('primary', 'medium', 'medium');
+            padding: space(1) space(1.5);
+        }
+        @if ($size == 'large') {
+            @include font('primary', 'large', 'medium');
+            padding: space(1.5) space(3);
+        }
+    }
+}
+
+@mixin button-icon($icon-name, $size) {
+    .icon {
+        @include icon($icon-name);
+        @include icon-size($size);
+    
+        @if ($size == 'small') {
+            margin: 0 space(.5);
+        }
+        @if ($size == 'medium') {
+            margin: 0 space(1);
+        }
+        @if ($size == 'large') {
+            margin: 0 space(1.5);
+        }
+    }
+}
+
+
+// Button Layout
+//------------------------------------------------------------------
+
+@mixin button-layout($layout) {
+    @if ($layout == 'label-left') {
+        text-align: left;
+    }
+    @if ($layout == 'label-center') {
+        text-align: center;
+    }
+    @if ($layout == 'label-right') {
+        text-align: right;
+    }
+}
+
+// Button Styles
+//-------------------------------------------------------------------
+
+@mixin button-style($style) {
+    // Default styles
+    display: flex;
+    flex-wrap: nowrap;
+    min-width: 0;
+    text-decoration: none;
+
+    @if ($style == 'primary') {
+        @include button-primary;
+    }
+    @if ($style == 'secondary') {
+        @include button-secondary;
+    }
+    @if ($style == 'tertiary') {
+        @include button-tertiary;
+    }
+}
+
+@mixin button-primary() {
+    background: green;
+
+    &:hover {
+        background: rgba(green, 0.2);
+    }
+
+    &:active { 
+        // Styles 
+    }
+
+    &:focus { 
+        // Styles 
+    }
+
+    &:disabled { 
+        // Styles 
+    }
+}
+
+

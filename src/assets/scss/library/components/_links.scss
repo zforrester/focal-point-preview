@@ -1,0 +1,75 @@
+//-------------------------------------------------------------------
+// Links
+// -------------------------------------------------------------------
+
+$link-sizes: ('small', 'medium', 'large');
+$link-layouts: ('label-left', 'label-center', 'label-right');
+
+// Link Sizes
+//-------------------------------------------------------------------
+
+@mixin link-size($size) {
+    margin: space(-.5) space(-1);
+    .label,
+    .icon {
+        margin: space(.5) space(1)
+    }
+    @if ($size == 'small') {
+        .label {
+            @include font('primary', 'small', 'medium');
+        }
+    }
+    @if ($size == 'medium') {
+        .label {
+            @include font('primary', 'medium', 'medium');
+        }
+    }
+    @if ($size == 'large') {
+        .label {
+            @include font('primary', 'large', 'medium');
+        }
+    }
+}
+
+
+// Link Layout
+//------------------------------------------------------------------
+
+@mixin link-layout($layout) {
+    @if ($layout == 'label-left') {
+        text-align: left;
+    }
+    @if ($layout == 'label-center') {
+        text-align: center;
+    }
+    @if ($layout == 'label-right') {
+        text-align: right;
+    }
+}
+
+
+@mixin link-style {
+    display: flex;
+    flex-wrap: nowrap;
+    min-width: 0;
+    text-decoration: none;
+
+    &:hover {
+        color: green;
+        // Styles 
+    }
+
+    &:active { 
+        // Styles 
+    }
+
+    &:focus { 
+        // Styles 
+    }
+
+    &:disabled { 
+        // Styles 
+    }
+}
+
+

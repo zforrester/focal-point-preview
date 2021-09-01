@@ -1,0 +1,46 @@
+// Button Functions
+//-------------------------------------------------------------------
+
+@mixin button-reset() {
+    appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100%;
+    max-width: 100%;
+    -webkit-tap-highlight-color: color('black', 0);
+}
+
+@mixin button($style: 'primary', $size: 'medium', $layout: 'label-center') {
+    @include get-button-style($style);
+    @include get-button-size($size);
+    @include get-button-layout($layout);
+}
+
+@mixin get-button-style($style) {
+    @if index($button-styles, $style) {
+        @include button-style($style);
+    } @else {
+        @warn errorMessage($style, $button-styles, 'components/_buttons.scss');
+    }
+}
+
+@mixin get-button-size($size) {
+    @if index($button-sizes, $size) {
+        @include button-size($size);
+    } @else {
+        @warn errorMessage($size, $button-sizes, 'components/_buttons.scss');
+    }
+}
+
+@mixin get-button-layout($layout) {
+    @if index($button-layouts, $layout) {
+        @include button-layout($layout);
+    } @else {
+        @warn errorMessage($layout, $button-layouts, 'components/_buttons.scss');
+    }
+}

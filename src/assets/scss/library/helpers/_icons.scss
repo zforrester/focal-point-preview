@@ -1,0 +1,73 @@
+//-------------------------------------------------------------------
+// Icons
+//-------------------------------------------------------------------
+
+// Icon Base Settings
+// -------------------------------------------------------------------
+
+// Used to apply icon glyphs through CSS
+@mixin icon($name) {
+    @if index($icon-list, $name) {
+        // background-image: url('/icons/close.svg');
+        -webkit-mask: url("/icons/#{$name}.svg") no-repeat;
+        -webkit-mask-size: contain;
+        mask: url("/icons/#{$name}.svg") no-repeat;
+        mask-size: contain;
+        
+    } @else {
+        @warn errorMessage($name, $icon-list, 'tokens/_icons.scss');
+    }
+
+    @include show-icon-guides;
+    @include transition;
+}
+
+// Used for positioning inline SVG icons
+@mixin icon-inline {
+    @include show-icon-guides;
+    position: relative;
+
+    svg {
+        @include absolute;
+        @include transition-fast;
+        height: 100%;
+        width: 100%;
+
+        path {
+            @include transition-fast;
+        }
+    }
+}
+
+// Icon Layout Guides
+// -------------------------------------------------------------------
+
+// Set to True to show guidelines
+$show-icon-guides: false;
+
+@mixin show-icon-guides {
+    @if $show-icon-guides {
+        position: relative;
+
+        &::after {
+            content: "";
+            @include absolute;
+            @include bg(contain);
+            background-image: url("library-icon-guide.svg");
+            z-index: $z-under;
+        }
+    }
+}
+
+@mixin icon-size($size) {
+    $type: type-of($size);
+    @if $type == "number" {
+        width: strip-units($size) * 1%;
+        @include ratio(1, 1);
+    } @else if map-has-key($icon-sizes, $size) {
+        width: map-get($icon-sizes, $size);
+        height: map-get($icon-sizes, $size);
+    } @else {
+        @warn errorMessage($size, $icon-sizes, 'tokens/_icons.scss');
+    }
+}
