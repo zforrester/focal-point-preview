@@ -2,17 +2,7 @@
 //-------------------------------------------------------------------
 // List out each icon file to generate a CSS class
 
-$icon-list: (
-    'plus',
-    'warn',
-    'close',
-    'chevron-left',
-    'chevron-right',
-    'mail',
-    'github',
-    'dribbble',
-    'twitter'
-);
+$icon-list: ('grid', 'sun', 'moon');
 
 // Icon Sizes
 //-------------------------------------------------------------------
@@ -20,8 +10,8 @@ $icon-list: (
 $icon-sizes: (
     'x-large': space(10),
     'large': space(6),
-    'medium': space(4),
-    'small': space(2.5),
+    'medium': space(3.5),
+    'small': space(3),
     'x-small': space(2),
     'xx-small': space(1.5),
 );

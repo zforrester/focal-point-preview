@@ -2,19 +2,7 @@
 .view
   .header
     h1 Image Focal Point Preview
-    .actions
-      ul.action-list
-        li.action-item
-          a.button(href="#") Fork on Github
-        li.action-item
-          button.icon(@click="toggleGrid")
-            .icon
-            .label Toggle Grid
-        li.action-item
-          button.icon(@click="toggleDarkUI" :class={'on' : darkMode})
-            .icon
-            .label Toggle Dark Mode
-
+    Actions(:showGrid="showGrid" :darkMode="darkMode" @toggleGrid="toggleGrid()" @toggleDarkModeUI="toggleDarkModeUI()")
 
   .canvas
     .controls
@@ -53,7 +41,7 @@
             span.description Set the CSS background-size
             input(type="text" v-model="backgroundSize")
 
-    .preview(ref="preview" @mousemove="resize($event)" @mouseup="endResize($event)")
+    .preview(ref="preview" @mousemove="resize($event)" @mouseup="endResize($event)" :class="{'showGrid' : showGrid}")
       .image-container(ref="imageContainer")
         .image(:style="{backgroundImage: `${url}`, backgroundPosition: `${posX} ${posY}`, backgroundSize: `${backgroundSize}` }")
         .guidelines(:style="posVars")
@@ -69,6 +57,11 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
+import Actions from '../components/Actions.vue'
+
+components: {
+    Actions
+}
 
 const image = ref()
 const filename = ref('' || 'card.png')
@@ -79,6 +72,9 @@ const backgroundSize = ref('' || 'cover')
 const preview = ref()
 const imageContainer = ref()
 const bottomRight = ref()
+
+const showGrid = ref(true)
+const darkMode = ref()
 
 const url = computed(() => {
     if (filename.value) return `url("/images/${filename.value}")`
@@ -91,7 +87,7 @@ const posVars = computed(() => {
     }
 })
 
-const increment = (i:number, coordinate: string) => {
+const increment = (i: number, coordinate: string) => {
     let unit = ''
     let value = 0
 
@@ -137,37 +133,47 @@ const increment = (i:number, coordinate: string) => {
 
 let resizeActive = false
 
-const resize = (event:any) => {
-  if (resizeActive) {
-    console.log('hello')
-    let pageX = event.pageX
-    let pageY = event.pageY
+const resize = (event: any) => {
+    if (resizeActive) {
+        console.log('hello')
+        let pageX = event.pageX
+        let pageY = event.pageY
 
-    let imageContainerWidth = imageContainer.value.getBoundingClientRect().left
-    let imageContainerHeight = imageContainer.value.getBoundingClientRect().top
+        let imageContainerWidth =
+            imageContainer.value.getBoundingClientRect().left
+        let imageContainerHeight =
+            imageContainer.value.getBoundingClientRect().top
 
-    imageContainer.value.style.width = pageX - imageContainerWidth + 'px'
-    imageContainer.value.style.height = pageY - imageContainerHeight + 'px'
+        imageContainer.value.style.width = pageX - imageContainerWidth + 'px'
+        imageContainer.value.style.height = pageY - imageContainerHeight + 'px'
 
-    console.log('pageY', pageY)
-    console.log('pageX', pageX)
+        console.log('pageY', pageY)
+        console.log('pageX', pageX)
 
-    console.log('size', imageContainer.value.getBoundingClientRect())
-    console.log('imageContainerHeight', imageContainerHeight)
-  }
+        console.log('size', imageContainer.value.getBoundingClientRect())
+        console.log('imageContainerHeight', imageContainerHeight)
+    }
 }
 
-
-const endResize = (event:any) => {
-  event.preventDefault()
-  resizeActive = false
+const endResize = (event: any) => {
+    event.preventDefault()
+    resizeActive = false
 }
 
-const startResize = (event:any) => {
-  event.preventDefault()
-  resizeActive = true
+const startResize = (event: any) => {
+    event.preventDefault()
+    resizeActive = true
 }
 
+const toggleGrid = () => {
+    showGrid.value = !showGrid.value
+    console.log('emitted toggle')
+}
+
+const toggleDarkModeUI = () => {
+    darkMode.value = !darkMode.value
+    console.log('emitted toggle')
+}
 </script>
 
 <style scoped lang="scss">
@@ -179,36 +185,30 @@ const startResize = (event:any) => {
     flex-direction: column;
 }
 
-button, a {
-  @include button-reset;
-  @include font('primary', 'small', 'medium');
-  line-height: 1;
-  text-decoration: none;
-}
-
 .header {
     background: color('white');
     box-shadow: 0 1px 1px color('gray-900', 0.1);
-    padding: space(1);
+    padding: space(0.75);
     z-index: 1;
     position: sticky;
     top: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 
     h1 {
         @include font('primary', 'small', 'medium');
         color: color('gray-800');
-        padding: space(0.5);
-        text-align: center;
-    }
+        padding: 0 space(1);
+        margin-right: auto;
 
-    .action-list {
-      display: flex;
-      margin: space(-1);
+        @include mq(screen('medium')) {
+            text-align: center;
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
     }
-
-    /* button {
-      background: color()
-    } */
 }
 
 .canvas {
@@ -284,7 +284,7 @@ button, a {
         &:focus {
             box-shadow: 0 0 0px 0.5px color('gray-900', 0.2),
                 0 3px 2px -2px color('gray-900', 0.2),
-                0 0 16px color('blue', 0.25), 0 0 2px 1px color('aqua');
+                0 0 16px color('blue', 0.25), 0 0 2px 1px color('blue');
         }
     }
 }
@@ -298,7 +298,6 @@ button, a {
     place-items: center;
     min-height: 0;
     min-width: 0;
-
 }
 
 .image-container {
@@ -314,18 +313,17 @@ button, a {
     box-shadow: 0 4px 8px color('gray-900', 0.3);
 
     &:hover {
-      .resize-controls {
-        box-shadow: inset 0 0 0 2px color('aqua');
-      }
-      .control {
-        transform: translate3d(-50%, -50%, 0) scale(1);
-        margin: space(-.5);
-      }
+        .resize-controls {
+            box-shadow: inset 0 0 0 2px color('blue');
+        }
+        .control {
+            transform: translate3d(-50%, -50%, 0) scale(1);
+            margin: space(-0.5);
+        }
 
-      .coordinate-x .line {
-        opacity: 1;
-      }
-
+        .coordinate-x .line {
+            opacity: 1;
+        }
     }
 }
 
@@ -343,9 +341,17 @@ button, a {
 
     position: absolute;
     @include coordinates;
-    pointer-events: none;
     overflow: hidden;
     mix-blend-mode: hard-light;
+    @include transition();
+    @include show('off');
+    transform: scale(0);
+
+    .showGrid & {
+        @include show('on');
+        pointer-events: none;
+        transform: scale(1);
+    }
 
     .coordinate-x,
     .coordinate-y {
@@ -355,9 +361,9 @@ button, a {
 
     .line {
         position: absolute;
-        background-color: color('aqua');
+        background-color: color('blue');
         /* opacity: .5; */
-        box-shadow: 0 0 0 1px color('white', .5), 0 0 0 2px color('black', .4);
+        box-shadow: 0 0 0 1px color('white', 0.5), 0 0 0 2px color('black', 0.4);
         @include transition;
     }
 
@@ -388,14 +394,14 @@ button, a {
     position: absolute;
     @include coordinates;
     border-radius: inherit;
-    box-shadow: inset 0 0 0 0px color('aqua');
+    box-shadow: inset 0 0 0 0px color('blue');
     @include transition;
 
     .control {
         @include circle(space(2));
         background-color: color('white');
-        box-shadow: inset 0 0 0 2px color('aqua');
-        transform: translate3d(-50%, -50%, 0) scale(.8);
+        box-shadow: inset 0 0 0 2px color('blue');
+        transform: translate3d(-50%, -50%, 0) scale(0.8);
         position: absolute;
         @include transition;
     }
