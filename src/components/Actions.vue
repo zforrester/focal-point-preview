@@ -7,10 +7,11 @@
         .label Toggle Grid
     li.action-item
       button(@click="$emit('toggleDarkModeUI')" :class="{'active' : darkMode}")
-        .icon.sun
+        .icon(:class="{'moon' : darkMode, 'sun' : !darkMode}")
         .label Toggle Dark Mode
     li.action-item
-        GithubButton(href="https://github.com/zforrester/focal-point-preview" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" data-show-count="true" aria-label="Star zforrester/focal-point-preview on GitHub") Star
+        GithubButton(v-if="!darkMode" href="https://github.com/zforrester/focal-point-preview" data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" data-show-count="true" aria-label="Star zforrester/focal-point-preview on GitHub") Star
+        GithubButton(v-if="darkMode" href="https://github.com/zforrester/focal-point-preview" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-size="large" data-show-count="true" aria-label="Star zforrester/focal-point-preview on GitHub") Star
 
 </template>
 
@@ -59,6 +60,12 @@ button {
         box-shadow: 0 0 0 1px color('gray-300');
         background-color: color('gray-200');
         color: color('gray-600');
+
+        @include dark {
+            box-shadow: 0 0 0 1px color('gray-950', 0.3);
+            background-color: color('gray-500', 0.3);
+            color: color('gray-100');
+        }
     }
 
     &.active {

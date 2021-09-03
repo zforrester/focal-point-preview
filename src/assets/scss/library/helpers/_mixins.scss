@@ -6,7 +6,7 @@
     position: relative;
 
     &::before {
-        content: "";
+        content: '';
         display: block;
         padding-top: #{($height / $width) * 100%};
         @content;
@@ -65,8 +65,8 @@
     }
 }
 
-@mixin center-child($method: "flex") {
-    @if $method == "flex" {
+@mixin center-child($method: 'flex') {
+    @if $method == 'flex' {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -76,7 +76,7 @@
         }
     }
 
-    @if $method == "absolute" {
+    @if $method == 'absolute' {
         position: relative;
 
         > * {
@@ -101,13 +101,25 @@
 // Media Queries
 // -----------------------------------------------------------------------------
 
-@mixin mq($size, $limiter: "min-width", $max-size: "") {
-    @if ($limiter == "between") {
+@mixin mq($size, $limiter: 'min-width', $max-size: '') {
+    @if ($limiter == 'between') {
         @media only screen and (min-width: $size) and (max-width: $max-size) {
             @content;
         }
     } @else {
         @media only screen and ($limiter: $size) {
+            @content;
+        }
+    }
+}
+
+@mixin dark() {
+    .darkMode & {
+        @content;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .darkMode & {
             @content;
         }
     }
@@ -171,7 +183,7 @@
 //    https://css-tricks.com/snippets/sass/strip-unit-function/
 
 @function strip-units($number) {
-    @if type-of($number) == "number" and not unitless($number) {
+    @if type-of($number) == 'number' and not unitless($number) {
         @return $number / ($number * 0 + 1);
     }
 

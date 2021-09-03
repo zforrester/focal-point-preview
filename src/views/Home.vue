@@ -1,5 +1,5 @@
 <template lang="pug">
-.view
+.view(:class="{'darkMode':darkMode}")
   .header
     h1 Image Focal Point Preview
     Actions(:showGrid="showGrid" :darkMode="darkMode" @toggleGrid="toggleGrid()" @toggleDarkModeUI="toggleDarkModeUI()")
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import Actions from '../components/Actions.vue'
 
 components: {
@@ -172,8 +172,20 @@ const toggleGrid = () => {
 
 const toggleDarkModeUI = () => {
     darkMode.value = !darkMode.value
-    console.log('emitted toggle')
 }
+
+onMounted(() => {
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)')
+
+    if (prefersDarkScheme.matches) {
+        darkMode.value = true
+    }
+
+    prefersDarkScheme.addEventListener('change', (e) => {
+        const colorScheme = e.matches ? 'dark' : 'light'
+        if (colorScheme === 'dark') return (darkMode.value = true)
+    })
+})
 </script>
 
 <style scoped lang="scss">
@@ -195,12 +207,23 @@ const toggleDarkModeUI = () => {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    @include transition;
+
+    @include dark {
+        background: color('gray-800');
+        box-shadow: 0 1px 1px color('gray-950', 0.5);
+    }
 
     h1 {
         @include font('primary', 'small', 'medium');
         color: color('gray-800');
         padding: 0 space(1);
         margin-right: auto;
+        @include transition;
+
+        @include dark {
+            color: color('gray-200');
+        }
 
         @include mq(screen('medium')) {
             text-align: center;
@@ -219,6 +242,12 @@ const toggleDarkModeUI = () => {
     min-width: 0;
     height: 100%;
     overflow: hidden;
+    background-color: color('gray-200');
+    @include transition;
+
+    @include dark {
+        background-color: color('gray-900');
+    }
 }
 
 .controls {
@@ -229,12 +258,23 @@ const toggleDarkModeUI = () => {
     box-shadow: 1px 0 0 color('gray-900', 0.1);
     padding: space(2);
     overflow: auto;
-    /* display: none; */
+    @include transition;
+
+    @include dark {
+        background-color: color('gray-700', 0.5);
+        box-shadow: 1px 0 0 color('gray-950', 0.3);
+    }
 
     p {
         @include font('primary', 'x-small', 'light');
         color: color('gray-600');
         padding: space(1);
+        @include transition;
+
+        @include dark {
+            color: color('gray-500');
+            font-weight: font-weight('regular');
+        }
     }
 }
 
@@ -255,12 +295,23 @@ const toggleDarkModeUI = () => {
         @include font('primary', 'small', 'semi-bold');
         color: color('gray-800');
         padding: space(0.5);
+        @include transition;
+
+        @include dark {
+            color: color('gray-200');
+        }
     }
 
     .description {
         @include font('primary', 'x-small', 'light');
         color: color('gray-600');
         padding: space(0.5);
+        @include transition;
+
+        @include dark {
+            color: color('gray-500');
+            font-weight: font-weight('regular');
+        }
     }
 
     input {
@@ -276,9 +327,27 @@ const toggleDarkModeUI = () => {
         @include transition;
         width: 100%;
 
+        @include dark {
+            color: color('gray-300');
+            background-color: color('gray-700', 0.4);
+            box-shadow: inset 0 1px 1px color('white', 0.1),
+                inset 0 0 0 1px color('gray-500', 0.1),
+                0 0 0px 0.5px color('gray-950', 0.5),
+                0 3px 3px -2px color('gray-950', 0.3);
+
+            &::selection {
+                background-color: color('blue');
+                color: color('white');
+            }
+        }
+
         &::placeholder {
             @include font('primary', 'x-small', 'regular');
             color: color('gray-500');
+
+            @include dark {
+                color: color('gray-400');
+            }
         }
 
         &:focus {
@@ -310,7 +379,16 @@ const toggleDarkModeUI = () => {
     position: relative;
     border-radius: radius('medium');
     background-color: color('gray-100');
-    box-shadow: 0 4px 8px color('gray-900', 0.3);
+    box-shadow: 0 8px 8px -4px color('gray-900', 0.3),
+        0 16px 24px -8px color('gray-950', 0.3),
+        0 4px 24px color('gray-950', 0.2);
+
+    @include dark {
+        background-color: color('gray-900');
+        box-shadow: 0 8px 8px -4px color('gray-900', 0.3),
+            0 16px 24px -8px color('gray-950', 0.3),
+            0 4px 24px color('gray-950', 0.2);
+    }
 
     &:hover {
         .resize-controls {
@@ -404,6 +482,7 @@ const toggleDarkModeUI = () => {
         transform: translate3d(-50%, -50%, 0) scale(0.8);
         position: absolute;
         @include transition;
+        cursor: nwse-resize;
     }
 
     .bottom-right {

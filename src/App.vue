@@ -7,7 +7,6 @@
 <style lang="scss">
 html,
 body {
-    background-color: color('gray-200');
     position: fixed;
     @include coordinates;
     overflow: hidden;

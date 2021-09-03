@@ -9,17 +9,18 @@
 @mixin icon($name) {
     @if index($icon-list, $name) {
         // background-image: url('/icons/close.svg');
-        -webkit-mask: url("/icons/#{$name}.svg") no-repeat;
+        -webkit-mask: url('/icons/#{$name}.svg') no-repeat;
         -webkit-mask-size: contain;
-        mask: url("/icons/#{$name}.svg") no-repeat;
+        mask: url('/icons/#{$name}.svg') no-repeat;
         mask-size: contain;
-        
     } @else {
         @warn errorMessage($name, $icon-list, 'tokens/_icons.scss');
     }
 
     @include show-icon-guides;
-    @include transition;
+    transition: background $t $t-snap, background-color $t $t-snap,
+        opacity $t $t-snap, transform $t $t-snap;
+    // @include transition;
 }
 
 // Used for positioning inline SVG icons
@@ -50,10 +51,10 @@ $show-icon-guides: false;
         position: relative;
 
         &::after {
-            content: "";
+            content: '';
             @include absolute;
             @include bg(contain);
-            background-image: url("library-icon-guide.svg");
+            background-image: url('library-icon-guide.svg');
             z-index: $z-under;
         }
     }
@@ -61,7 +62,7 @@ $show-icon-guides: false;
 
 @mixin icon-size($size) {
     $type: type-of($size);
-    @if $type == "number" {
+    @if $type == 'number' {
         width: strip-units($size) * 1%;
         @include ratio(1, 1);
     } @else if map-has-key($icon-sizes, $size) {
