@@ -41,6 +41,15 @@
             span.description Set the CSS background-size
             input(type="text" v-model="backgroundSize")
 
+      .attribution
+        a.logo(href="https://zachforrester.me" target="_blank" rel="noopener noreferrer")
+          Logo
+        small Photo by #[a(href="https://unsplash.com/@jetlag?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText" target="_blank" rel="noopener noreferrer") David Troeger] on #[a(href="https://unsplash.com/s/photos/turtle?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText" target="_blank" rel="noopener noreferrer") Unsplash ]
+
+        small Built by #[a(href="https://zachforrester.me" target="_blank" rel="noopener noreferrer") Zach Forrester]
+
+
+
     .preview(ref="preview" @mousemove="resize($event)" @mouseup="endResize($event)" :class="{'showGrid' : showGrid}")
       .image-container(ref="imageContainer")
         .image(:style="{backgroundImage: `${url}`, backgroundPosition: `${posX} ${posY}`, backgroundSize: `${backgroundSize}` }")
@@ -57,16 +66,18 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from 'vue'
+
 import Actions from '../components/Actions.vue'
+import Logo from '../components/Logo.vue'
 
 components: {
-    Actions
+    'Logo', 'Actions'
 }
 
 const image = ref()
-const filename = ref('' || 'card.png')
-const posX = ref('' || '50%')
-const posY = ref('' || '50%')
+const filename = ref('' || 'turtle.jpg')
+const posX = ref('' || '44%')
+const posY = ref('' || '63%')
 const backgroundSize = ref('' || 'cover')
 
 const preview = ref()
@@ -77,7 +88,9 @@ const showGrid = ref(true)
 const darkMode = ref()
 
 const url = computed(() => {
-    if (filename.value) return `url("/images/${filename.value}")`
+    if (!filename.value) return
+    if (filename.value.includes('://')) return `url("${filename.value}")`
+    return `url("/images/${filename.value}")`
 })
 
 const posVars = computed(() => {
@@ -259,6 +272,8 @@ onMounted(() => {
     padding: space(2);
     overflow: auto;
     @include transition;
+    display: flex;
+    flex-direction: column;
 
     @include dark {
         background-color: color('gray-700', 0.5);
@@ -275,6 +290,41 @@ onMounted(() => {
             color: color('gray-500');
             font-weight: font-weight('regular');
         }
+    }
+
+    .attribution {
+        margin-top: auto;
+    }
+
+    small {
+        @include font('primary', 'x-small', 'regular');
+        color: color('gray-600');
+        padding: space(0.5);
+        @include transition;
+        display: block;
+
+        @include dark {
+            color: color('gray-500');
+            font-weight: font-weight('regular');
+        }
+
+        a {
+            text-decoration: none;
+            color: darken(color('blue'), 10%);
+            @include transition;
+
+            &:hover {
+                text-decoration: underline;
+                color: color('blue');
+            }
+        }
+    }
+
+    .logo {
+        width: 50%;
+        display: block;
+        transform-origin: bottom left;
+        transform: scale(0.5);
     }
 }
 
@@ -367,6 +417,7 @@ onMounted(() => {
     place-items: center;
     min-height: 0;
     min-width: 0;
+    max-width: 100%;
 }
 
 .image-container {
@@ -375,7 +426,6 @@ onMounted(() => {
     min-height: 100px;
     min-width: 100px;
     max-height: 100%;
-    max-width: 100%;
     position: relative;
     border-radius: radius('medium');
     background-color: color('gray-100');
