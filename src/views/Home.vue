@@ -2,6 +2,20 @@
 .view
   .header
     h1 Image Focal Point Preview
+    .actions
+      ul.action-list
+        li.action-item
+          a.button(href="#") Fork on Github
+        li.action-item
+          button.icon(@click="toggleGrid")
+            .icon
+            .label Toggle Grid
+        li.action-item
+          button.icon(@click="toggleDarkUI" :class={'on' : darkMode})
+            .icon
+            .label Toggle Dark Mode
+
+
   .canvas
     .controls
       p This little tool will help you find the focal point of your image. Use these coordinates to set your background position in your CSS.
@@ -15,7 +29,7 @@
         li
           .input-container
             label Postion X
-            span.description Start by guessing the hozional coordinate, then adjust
+            span.description Start by guessing the hozional coordinate, then adjust. Percentages work best, but you can try px, em, vh, or wm units.
             input(type="text"
               v-model="posX"
               @keyup.exact.up="increment(1, 'x')"
@@ -33,14 +47,22 @@
               @keyup.exact.shift.up="increment(10, 'y')"
               @keyup.exact.shift.down="increment(-10, 'y')"
             )
+        li
+          .input-container
+            label Background Size
+            span.description Set the CSS background-size
+            input(type="text" v-model="backgroundSize")
 
-    .image-container
-      .image(:style="{backgroundImage: `${url}`, backgroundPosition: `${posX} ${posY}` }")
-      .guidelines(:style="posVars")
-        .coordinate-x
-          .line
-        .coordinate-y
-          .line
+    .preview(ref="preview" @mousemove="resize($event)" @mouseup="endResize($event)")
+      .image-container(ref="imageContainer")
+        .image(:style="{backgroundImage: `${url}`, backgroundPosition: `${posX} ${posY}`, backgroundSize: `${backgroundSize}` }")
+        .guidelines(:style="posVars")
+          .coordinate-x
+            .line
+          .coordinate-y
+            .line
+        .resize-controls
+          .bottom-right.control(ref="bottomRight" @mousedown="startResize($event)")
 
 
 </template>
@@ -52,6 +74,11 @@ const image = ref()
 const filename = ref('' || 'card.png')
 const posX = ref('' || '50%')
 const posY = ref('' || '50%')
+const backgroundSize = ref('' || 'cover')
+
+const preview = ref()
+const imageContainer = ref()
+const bottomRight = ref()
 
 const url = computed(() => {
     if (filename.value) return `url("/images/${filename.value}")`
@@ -63,24 +90,10 @@ const posVars = computed(() => {
         '--pos-Y': posY.value,
     }
 })
-//
-// const seperateUnit = (source: string) => {
-//     let unit = ''
-//     let value = ''
-//
-//     if (source.includes('%')) {
-//         unit = '%'
-//         value = source.replace('%', '')
-//         console.log('unit', unit)
-//         console.log('value', value)
-//     }
-// }
 
-const increment = (i: number, coordinate: string) => {
-    console.log('i', i)
-    console.log('coordinate', coordinate)
+const increment = (i:number, coordinate: string) => {
     let unit = ''
-    let value: number = 0
+    let value = 0
 
     const captureUnit = (source: string) => {
         if (source.includes('%')) {
@@ -121,6 +134,40 @@ const increment = (i: number, coordinate: string) => {
         posY.value = value + unit
     }
 }
+
+let resizeActive = false
+
+const resize = (event:any) => {
+  if (resizeActive) {
+    console.log('hello')
+    let pageX = event.pageX
+    let pageY = event.pageY
+
+    let imageContainerWidth = imageContainer.value.getBoundingClientRect().left
+    let imageContainerHeight = imageContainer.value.getBoundingClientRect().top
+
+    imageContainer.value.style.width = pageX - imageContainerWidth + 'px'
+    imageContainer.value.style.height = pageY - imageContainerHeight + 'px'
+
+    console.log('pageY', pageY)
+    console.log('pageX', pageX)
+
+    console.log('size', imageContainer.value.getBoundingClientRect())
+    console.log('imageContainerHeight', imageContainerHeight)
+  }
+}
+
+
+const endResize = (event:any) => {
+  event.preventDefault()
+  resizeActive = false
+}
+
+const startResize = (event:any) => {
+  event.preventDefault()
+  resizeActive = true
+}
+
 </script>
 
 <style scoped lang="scss">
@@ -132,8 +179,14 @@ const increment = (i: number, coordinate: string) => {
     flex-direction: column;
 }
 
+button, a {
+  @include button-reset;
+  @include font('primary', 'small', 'medium');
+  line-height: 1;
+  text-decoration: none;
+}
+
 .header {
-    /* width: 100%; */
     background: color('white');
     box-shadow: 0 1px 1px color('gray-900', 0.1);
     padding: space(1);
@@ -147,13 +200,23 @@ const increment = (i: number, coordinate: string) => {
         padding: space(0.5);
         text-align: center;
     }
+
+    .action-list {
+      display: flex;
+      margin: space(-1);
+    }
+
+    /* button {
+      background: color()
+    } */
 }
 
 .canvas {
     display: flex;
-    flex-wrap: wrap;
+    align-items: flex-start;
     flex-grow: 1;
     min-height: 0;
+    min-width: 0;
     height: 100%;
     overflow: hidden;
 }
@@ -161,21 +224,24 @@ const increment = (i: number, coordinate: string) => {
 .controls {
     width: clamp(180px, 20%, 240px);
     height: 100%;
+    flex-shrink: 0;
     background-color: color('gray-100');
     box-shadow: 1px 0 0 color('gray-900', 0.1);
     padding: space(2);
     overflow: auto;
+    /* display: none; */
 
     p {
-        @include font('primary', 'x-small', 'regular');
+        @include font('primary', 'x-small', 'light');
         color: color('gray-600');
         padding: space(1);
     }
 }
 
 .options {
-    margin: space(-1.5);
+    margin: 0 space(-1.5);
     padding: space(0.5);
+
     li {
         padding: space(1.5);
     }
@@ -192,7 +258,7 @@ const increment = (i: number, coordinate: string) => {
     }
 
     .description {
-        @include font('primary', 'x-small', 'regular');
+        @include font('primary', 'x-small', 'light');
         color: color('gray-600');
         padding: space(0.5);
     }
@@ -223,21 +289,52 @@ const increment = (i: number, coordinate: string) => {
     }
 }
 
-.image-container {
+.preview {
     flex-grow: 1;
+    flex-shrink: 1;
+    padding: space(3);
+    height: 100%;
     display: grid;
     place-items: center;
+    min-height: 0;
+    min-width: 0;
+
+}
+
+.image-container {
+    height: 100%;
+    width: 100%;
+    min-height: 100px;
+    min-width: 100px;
+    max-height: 100%;
+    max-width: 100%;
     position: relative;
-    margin: space(3);
-    border-radius: radius('small');
-    overflow: hidden;
+    border-radius: radius('medium');
+    background-color: color('gray-100');
     box-shadow: 0 4px 8px color('gray-900', 0.3);
+
+    &:hover {
+      .resize-controls {
+        box-shadow: inset 0 0 0 2px color('aqua');
+      }
+      .control {
+        transform: translate3d(-50%, -50%, 0) scale(1);
+        margin: space(-.5);
+      }
+
+      .coordinate-x .line {
+        opacity: 1;
+      }
+
+    }
 }
 
 .image {
     @include bg();
     position: absolute;
     @include coordinates;
+    pointer-events: none;
+    border-radius: inherit;
 }
 
 .guidelines {
@@ -246,6 +343,9 @@ const increment = (i: number, coordinate: string) => {
 
     position: absolute;
     @include coordinates;
+    pointer-events: none;
+    overflow: hidden;
+    mix-blend-mode: hard-light;
 
     .coordinate-x,
     .coordinate-y {
@@ -256,6 +356,9 @@ const increment = (i: number, coordinate: string) => {
     .line {
         position: absolute;
         background-color: color('aqua');
+        /* opacity: .5; */
+        box-shadow: 0 0 0 1px color('white', .5), 0 0 0 2px color('black', .4);
+        @include transition;
     }
 
     .coordinate-x {
@@ -264,7 +367,8 @@ const increment = (i: number, coordinate: string) => {
             top: 0;
             left: 0;
             bottom: 0;
-            width: 1px;
+            width: 2px;
+            transform: translateX(-50%);
         }
     }
 
@@ -274,8 +378,32 @@ const increment = (i: number, coordinate: string) => {
             top: 0;
             left: 0;
             right: 0;
-            height: 1px;
+            height: 2px;
+            transform: translateY(-50%);
         }
+    }
+}
+
+.resize-controls {
+    position: absolute;
+    @include coordinates;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 0px color('aqua');
+    @include transition;
+
+    .control {
+        @include circle(space(2));
+        background-color: color('white');
+        box-shadow: inset 0 0 0 2px color('aqua');
+        transform: translate3d(-50%, -50%, 0) scale(.8);
+        position: absolute;
+        @include transition;
+    }
+
+    .bottom-right {
+        top: 100%;
+        left: 100%;
+        /* margin: -2px; */
     }
 }
 </style>
