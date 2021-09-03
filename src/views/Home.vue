@@ -64,15 +64,13 @@
 
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 
 import Actions from '../components/Actions.vue'
 import Logo from '../components/Logo.vue'
 
-components: {
-    'Logo', 'Actions'
-}
+components: ['Logo', 'Actions']
 
 const image = ref()
 const filename = ref('' || 'turtle.jpg')
@@ -100,11 +98,11 @@ const posVars = computed(() => {
     }
 })
 
-const increment = (i: number, coordinate: string) => {
+const increment = (i, coordinate) => {
     let unit = ''
     let value = 0
 
-    const captureUnit = (source: string) => {
+    const captureUnit = (source) => {
         if (source.includes('%')) {
             unit = '%'
             value = Number(source.replace('%', ''))
@@ -146,7 +144,7 @@ const increment = (i: number, coordinate: string) => {
 
 let resizeActive = false
 
-const resize = (event: any) => {
+const resize = (event) => {
     if (resizeActive) {
         console.log('hello')
         let pageX = event.pageX
@@ -168,12 +166,12 @@ const resize = (event: any) => {
     }
 }
 
-const endResize = (event: any) => {
+const endResize = (event) => {
     event.preventDefault()
     resizeActive = false
 }
 
-const startResize = (event: any) => {
+const startResize = (event) => {
     event.preventDefault()
     resizeActive = true
 }
