@@ -13,13 +13,18 @@
           .input-container
             label Select an Image
             span.description This image is not uploaded or stored anywhere, and is read from your computer's local storage
-            input(type="text" v-model="filename")
+            input(type="file" accept="image/*" ref="chooseFile" id="choose-file" name="choose-file" @change="getImgData()")
+            label.choose-file-button(for="choose-file") Choose File
+            span.description If you're running this localy, put the image in the public/images folder, and enter the filename with the extension.
+            input(type="text" v-model="filename" placeholder="filename.png")
+
         li
           .input-container
             label Postion X
             span.description Start by guessing the hozional coordinate, then adjust. Percentages work best, but you can try px, em, vh, or wm units.
             input(type="text"
               v-model="posX"
+              placeholder="x %"
               @keyup.exact.up="increment(1, 'x')"
               @keyup.exact.down="increment(-1, 'x')"
               @keyup.exact.shift.up="increment(10, 'x')"
@@ -30,6 +35,8 @@
             label Postion Y
             input(type="text"
               v-model="posY"
+              placeholder="y %"
+
               @keyup.exact.up="increment(1, 'y')"
               @keyup.exact.down="increment(-1, 'y')"
               @keyup.exact.shift.up="increment(10, 'y')"
@@ -39,7 +46,8 @@
           .input-container
             label Background Size
             span.description Set the CSS background-size
-            input(type="text" v-model="backgroundSize")
+            input(type="text" v-model="backgroundSize" placeholder="contain / cover / 100%"
+)
 
       .attribution
         a.logo(href="https://zachforrester.me" target="_blank" rel="noopener noreferrer")
@@ -78,6 +86,8 @@ const posX = ref('' || '44%')
 const posY = ref('' || '63%')
 const backgroundSize = ref('' || 'cover')
 
+const chooseFile = ref()
+
 const preview = ref()
 const imageContainer = ref()
 const bottomRight = ref()
@@ -88,6 +98,7 @@ const darkMode = ref()
 const url = computed(() => {
     if (!filename.value) return
     if (filename.value.includes('://')) return `url("${filename.value}")`
+    if (filename.value.includes('base64')) return `url("${filename.value}")`
     return `url("/images/${filename.value}")`
 })
 
@@ -183,6 +194,24 @@ const toggleGrid = () => {
 
 const toggleDarkModeUI = () => {
     darkMode.value = !darkMode.value
+}
+
+const getImgData = () => {
+    console.log('getImgData')
+
+    const files = chooseFile.value.files[0]
+
+    console.log('files', files)
+
+    if (files) {
+        const fileReader = new FileReader()
+        fileReader.readAsDataURL(files)
+        fileReader.addEventListener('load', function () {
+            console.log('file', this.result.replace(/(\r\n|\n|\r)/gm, ''))
+
+            filename.value = this.result.replace(/(\r\n|\n|\r)/gm, '')
+        })
+    }
 }
 
 onMounted(() => {
@@ -402,6 +431,50 @@ onMounted(() => {
             box-shadow: 0 0 0px 0.5px color('gray-900', 0.2),
                 0 3px 2px -2px color('gray-900', 0.2),
                 0 0 16px color('blue', 0.25), 0 0 2px 1px color('blue');
+        }
+    }
+
+    [type='file'] {
+        height: 0;
+        width: 0;
+        overflow: hidden;
+        appearance: none;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
+
+        &:focus {
+            box-shadow: none;
+            & + .choose-file-button {
+                box-shadow: inset 0 1px 1px color('aqua'),
+                    inset 0 0 2px color('aqua', 0.5),
+                    0 3px 3px -2px color('gray-950', 0.3),
+                    0 0 0 1px color('white'), 0 0 16px color('blue', 0.5),
+                    0 0 2px 2px color('blue', 0.8);
+            }
+        }
+    }
+
+    .choose-file-button {
+        @include transition;
+        padding: space(1) space(1);
+        width: 100%;
+        text-align: center;
+        margin: space(1) 0;
+        display: block;
+        border-radius: radius('medium');
+        background-image: linear-gradient(color('blue'), color('dark-blue'));
+        @include font('primary', 'x-small', 'medium');
+        line-height: line-height('small');
+        box-shadow: inset 0 1px 1px color('aqua'),
+            inset 0 0 2px color('aqua', 0.5),
+            0 3px 3px -2px color('gray-950', 0.3);
+        color: color('white');
+
+        &:hover {
+            box-shadow: inset 0 1px 1px color('aqua'),
+                inset 0 0 2px color('aqua', 0.5),
+                0 3px 3px -2px color('gray-950', 0.3), 0 0 6px color('aqua');
         }
     }
 }
