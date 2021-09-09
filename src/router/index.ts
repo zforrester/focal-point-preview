@@ -9,6 +9,14 @@ const routes = [
         path: '/focal-point',
         component: Home,
     },
+    {
+        path: '/focalpoint',
+        component: Home,
+    },
+    {
+        path: '/',
+        component: Home,
+    },
 ]
 
 const router = createRouter({ history, routes })
