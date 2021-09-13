@@ -2,6 +2,8 @@
 
 Quickly test and adjust the focal point and CSS background position for images
 
+https://labs.zachforrester.me/focal-point
+
 ## Usage
 
 ### Choose an Image
