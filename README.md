@@ -14,7 +14,7 @@ Adjust the inputs for the x and y coordinates until the two lines intersect at y
 
 You can use the up and down arrow keys to adjust the inputs by increments of 1, and hold shift to adjust by increments of 10.
 
-You can use `px` or `em` units, but percentages are recommended for best results
+You can use `px`, `em`, `vh`, or `vm` units, but percentages are recommended for best results
 
 ### Define background-size
 To fill the available area, use `cover` (the default), but you can also try `contain` if you want to keep all of the image visible. You can pass any valid background-size value.
