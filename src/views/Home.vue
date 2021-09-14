@@ -230,7 +230,10 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .view {
-    height: 100vh;
+    position: fixed;
+    @include coordinates;
+    max-height: 100vh;
+    max-height: -webkit-fill-available;
     line-height: line-height('small');
     overflow: auto;
     display: flex;
