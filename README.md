@@ -23,9 +23,7 @@ To fill the available area, use `cover` (the default), but you can also try `con
 
 ### Setup
 
-The Preview page runs on Vue 3/Vite
-
-From the project root
+The Preview page runs on Vue 3/Vite.
 
 Install dependencies
 `npm i`
@@ -39,7 +37,7 @@ If you'd like similar functionality in your project, i've written a gist with 2 
 https://gist.github.com/zforrester/9c12892561975daaa7c18e7b672b0796
 
 `@mixin bg()`
-For quickly definin the postion, size, and focal point of a background image, with sensible defaults.
+For quickly defining the position, size, and focal point of a background image, with sensible defaults.
 
 `@mixin show-focal-point-guides()`
 Can be used from `bg()` or independently. Takes the x and y coordinates to draw bright red crosshairs using pseudo elements to help you define the images focal point
